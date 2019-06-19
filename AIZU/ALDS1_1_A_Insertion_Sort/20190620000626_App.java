@@ -16,17 +16,15 @@ class App {
             A[i] = n;
         }
 
-        for (int i = 0; i < N; i++) {
-            int minIdx = i;
-            for (int j = i + 1; j < N; j++) {
-                if (A[j] < A[minIdx]) {
-                    minIdx = j;
-                }
+        for (int i = 1; i < N; i++) {
+            int v = A[i];
+            int j = i - 1;
+            while (j >= 0 && A[j] > v) {
+                A[j + 1] = A[j];
+                j--;
             }
-            int min = A[minIdx];
-            A[minIdx] = A[i];
-            A[i] = min;
+            A[j + 1] = v;
+            printArray(A);
         }
-        printArray(A);
     }
 }
