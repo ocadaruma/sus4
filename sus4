@@ -5,8 +5,9 @@ set -eu
 cd $(dirname $0)
 
 INPUT_FILE_NAME="INPUT"
-JAVA_FILE_NAME="App.java"
-CLASS_FILE_NAME="App"
+APP_SOURCE_NAME="App.java"
+PREDEF_SOURCE_NAME="Predef.java"
+APP_CLASS_NAME="com.mayreh.sus4.App"
 
 usage() {
     echo "Usage: ./sus4 (exec|save) [category] [title]"
@@ -14,18 +15,18 @@ usage() {
 }
 
 exec_java() {
-    javac $JAVA_FILE_NAME
-    cat $INPUT_FILE_NAME | java $CLASS_FILE_NAME
+    javac -d out -classpath . $PREDEF_SOURCE_NAME $APP_SOURCE_NAME
+    cat $INPUT_FILE_NAME | java -classpath out $APP_CLASS_NAME
 }
 
 save() {
     category=$1
     title=$2
-    filename="$category/$title/$JAVA_FILE_NAME"
+    filename="$category/$title/$APP_SOURCE_NAME"
     mkdir -p "$category/$title"
     timestamp=$(date "+%Y%m%d%H%M%S")
 
-    cp -r $JAVA_FILE_NAME "$category/$title/${timestamp}_$JAVA_FILE_NAME"
+    cp -r $APP_SOURCE_NAME "$category/$title/${timestamp}_$APP_SOURCE_NAME"
 }
 
 if [ "$#" -lt 1 ]; then
