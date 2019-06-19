@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -eu
+
+cd $(dirname $0)
+
+INPUT_FILE_NAME="INPUT"
+JAVA_FILE_NAME="App.java"
+CLASS_FILE_NAME="App"
+
+usage() {
+    echo "Usage: ./sus4 (exec|save) [category] [title]"
+    exit 1
+}
+
+exec_java() {
+    javac $JAVA_FILE_NAME
+    cat $INPUT_FILE_NAME | java $CLASS_FILE_NAME
+}
+
+save() {
+    category=$1
+    title=$2
+    filename="$category/$title/$JAVA_FILE_NAME"
+    mkdir -p "$category/$title"
+    timestamp=$(date "+%Y%m%d%H%M%S")
+
+    cp -r $JAVA_FILE_NAME "$category/$title/${timestamp}_$JAVA_FILE_NAME"
+}
+
+if [ "$#" -lt 1 ]; then
+    usage
+fi
+
+command="$1"
+
+case $command in
+    "exec" )
+        exec_java
+        ;;
+    "save" )
+        if [ "$#" -ne 3 ]; then
+            usage
+        fi
+
+        save $2 $3
+        ;;
+    * )
+        usage
+        ;;
+esac
